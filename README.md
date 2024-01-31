@@ -1,4 +1,4 @@
-# 
+# Example MNIST Tensorflow
 
 
 ## Create Virtual environment & install dependencies
@@ -10,11 +10,11 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+
+
 ## MNIST Dataset
 
 [Hugging Face MNIST Dataset](https://huggingface.co/datasets/mnist)
 
 
 ## References
-
-- [Sign Language Digits Dataset](https://github.com/ardamavi/Sign-Language-Digits-Dataset)
