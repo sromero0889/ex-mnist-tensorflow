@@ -1,5 +1,8 @@
+from os import listdir
 import tensorflow as tf
 from datasets import load_dataset
+from pathlib import Path
+import re
 
 
 def load_mnist_dataset(source) -> ((tf.Tensor, tf.Tensor), (tf.Tensor, tf.Tensor)):
@@ -20,3 +23,33 @@ def load_mnist_dataset(source) -> ((tf.Tensor, tf.Tensor), (tf.Tensor, tf.Tensor
             return NotImplemented
         case _:
             return NotImplemented
+
+
+def load_img(img_path: Path, target_size: (int, int), color_mode: str, channels: int) -> tf.Tensor:
+    img = tf.convert_to_tensor(
+        tf.keras.utils.load_img(
+            img_path,
+            color_mode=color_mode,
+            target_size=target_size,
+            interpolation='nearest',
+            keep_aspect_ratio=True
+        ),
+        dtype=tf.float32
+    )
+
+    img = tf.reshape(img, (target_size[0], target_size[1], channels)) / 255
+    return img
+
+
+def get_label_from_name(filename: str) -> int:
+    return int(re.findall(r'\d', filename)[-1])
+
+
+def load_img_dir(img_folder: Path, target_size: (int, int), channels: int) -> (tf.Tensor, tf.Tensor):
+    color_mode = 'grayscale' if channels == 1 else 'rgb'
+    labels = []
+    images = []
+    for f in listdir(img_folder):
+        labels.append(get_label_from_name(filename=f))
+        images.append(load_img(img_path=img_folder.joinpath(f), target_size=target_size, color_mode=color_mode, channels=channels))
+    return tf.convert_to_tensor(images), tf.convert_to_tensor(labels)
